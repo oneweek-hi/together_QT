@@ -34,7 +34,7 @@ class AlarmPage extends StatefulWidget{
 
 
 class AlarmPageSate extends State<AlarmPage>{
-  int _currentIndex=2;
+  var _setectedTime;
 
 
   @override
@@ -43,78 +43,105 @@ class AlarmPageSate extends State<AlarmPage>{
     // TODO: Pass Category variable to AsymmetricView (104)
 //    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amberAccent,
-//        leading: IconButton(
-//
-//          icon: Icon(
-//            Icons.person ,
-//            semanticLabel: 'profile',
-//          ),
-//          onPressed: () {
-//            Navigator.pushNamed(context, '/mypage');
-//          },
-//        ),
-        title: Text('함께묵상'),
-        actions: <Widget>[
 
-          IconButton(
-            icon: Icon(
-              Icons.person,
-              semanticLabel: 'profile',
-            ),
-            onPressed: () async {
-//              await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
-              Navigator.pushNamed(context, '/add');
-            },
-          ),
-        ],
-      ),
-      body: ListView(
+
+    return Center(
+
+      child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            SizedBox(height: 90.0),
+            SizedBox(height: 50.0),
             Column(
               children: <Widget>[
-                Icon(Icons.account_balance, color:Colors.amber),
-                Text('묵상의 기록',
-                    style:TextStyle(
-                      fontSize: 23,
-                      color: Colors.black,
-                    )),
-                Text('매일 동행 하는 기',
-                    style:TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey,
-                    )),
+                Icon(Icons.alarm , size: 30, color:Color(0xFFE0BD32)),
+                Padding(
+                  padding:EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text('알림 설정',
+                      style:TextStyle(
+                        fontSize: 25,
+                        color: Colors.black,
+                      )),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: Text('알림 설정을 하시면,',
+                      style:TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      )),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text('함께 묵상하는 파트너에게 동시에 알람이 갑니다.',
+                      style:TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      )),
+                ),
               ],
             ),
             SizedBox(height: 50.0),
+            Center(child: Text('$_setectedTime', style: TextStyle(fontSize: 30),)),
+            SizedBox(height: 40.0),
 
+            Center(
+                child: Container(
+                  width: 200,
+                  child: ElevatedButton(
+
+                    style: ElevatedButton.styleFrom(
+
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(50.0),
+                      ),
+                      primary: Color(0xFFFFF3A5),
+                      onPrimary: Colors.grey,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
+                      child: Text('다시 설정', style: TextStyle(
+                        fontSize: 15,
+                      ),
+                      ),
+
+                    ),
+                    onPressed: () {
+                     Future<TimeOfDay> selected =showTimePicker(
+                       context: context,
+                         initialTime: TimeOfDay.now(),
+                       builder: (context, child) {
+                         return Theme(
+                           data: ThemeData.light().copyWith(
+                             colorScheme: ColorScheme.light(
+                               // change the border color
+                               primary: Colors.amber,
+                               // change the text color
+                               onSurface: Colors.grey,
+                             ),
+                             // button colors
+                             buttonTheme: ButtonThemeData(
+                               colorScheme: ColorScheme.light(
+                                 primary: Colors.grey,
+                               ),
+                             ),
+                           ),
+                           child: child,
+                         );
+                       },
+                     );
+
+                     selected.then((time){setState((){ _setectedTime = '${time.format(context)}';});
+                     });
+                    }, //
+//                      '${time.hour} :${time.minute}'
+                  ),
+
+                )
+            )
 
 
           ]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-//        type: BottomNavigationBarType.shifting,
-//        backgroundColor: Color(0xFFF8F7F5),
-        iconSize: 25,
-        items:[
-          BottomNavigationBarItem(icon: Icon(Icons.import_contacts, color:Color(0xFFE0BD32)), title: Text('home', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.assignment_sharp,color:Color(0xFFE0BD32)), title: Text('list', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.access_alarm,color:Color(0xFFE0BD32)), title: Text('alarm', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_rounded,color:Color(0xFFE0BD32)), title: Text('partner', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-        ],
-        onTap:(index){
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-//description_rounded
-      //grade_outlined group
-//      resizeToAvoidBottomInset: false,
     );
 
   }

@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),),
                 ),
                 onPressed: () async {
-                  signInWithGoogle().then((value) => Navigator.pushNamed(context, '/home'));
+                  signInWithGoogle().then((value) => Navigator.pushNamed(context, '/nav'));
 //                  Navigator.pushNamed(context, '/home');
                 },
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amberAccent )),

@@ -26,6 +26,8 @@
 
 import 'package:flutter/material.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListPage extends StatefulWidget{
   ListPageSate createState()=> ListPageSate();
@@ -34,87 +36,102 @@ class ListPage extends StatefulWidget{
 
 
 class ListPageSate extends State<ListPage>{
-  int _currentIndex=1;
-
+  final _suggestions = <String>["test", "test2","test3", "test4", "test5"];
+  final _saved = <String>{};     // NEW
+  Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('everyPeopleQT').snapshots();
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Return an AsymmetricView (104)
-    // TODO: Pass Category variable to AsymmetricView (104)
-//    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    return StreamBuilder<QuerySnapshot>(
+      stream: _usersStream,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amberAccent,
-//        leading: IconButton(
-//
-//          icon: Icon(
-//            Icons.person ,
-//            semanticLabel: 'profile',
-//          ),
-//          onPressed: () {
-//            Navigator.pushNamed(context, '/mypage');
-//          },
-//        ),
-        title: Text('함께묵상'),
-        actions: <Widget>[
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading");
+        }
 
-          IconButton(
-            icon: Icon(
-              Icons.person,
-              semanticLabel: 'profile',
-            ),
-            onPressed: () async {
-//              await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
-              Navigator.pushNamed(context, '/add');
-            },
+        return Center (
+          child:ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            children: snapshot.data.docs.map((DocumentSnapshot document) {
+              return new ListTile(
+                leading: Text("135 번째 묵상"),
+                title: new Text(document.data()['bibleContentAddr']),
+                trailing: Icon(Icons.star_border, color:Colors.amber),
+              );
+            }).toList(),
           ),
-        ],
-      ),
-      body: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 90.0),
-            Column(
-              children: <Widget>[
-                Icon(Icons.account_balance, color:Colors.amber),
-                Text('묵상의 기록',
-                    style:TextStyle(
-                      fontSize: 23,
-                      color: Colors.black,
-                    )),
-                Text('매일 동행 하는 기',
-                    style:TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey,
-                    )),
-              ],
-            ),
-            SizedBox(height: 50.0),
-
-
-          ]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-//        type: BottomNavigationBarType.shifting,
-//        backgroundColor: Color(0xFFF8F7F5),
-        iconSize: 25,
-        items:[
-          BottomNavigationBarItem(icon: Icon(Icons.import_contacts, color:Color(0xFFE0BD32)), title: Text('home', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.assignment_sharp,color:Color(0xFFE0BD32)), title: Text('list', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.access_alarm,color:Color(0xFFE0BD32)), title: Text('alarm', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_rounded,color:Color(0xFFE0BD32)), title: Text('partner', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-        ],
-        onTap:(index){
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-//description_rounded
-      //grade_outlined group
-//      resizeToAvoidBottomInset: false,
+        );
+      },
     );
+  }
+
+//    return Center(
+//      child: ListView(
+//          padding: EdgeInsets.symmetric(horizontal: 24.0),
+//          children: <Widget>[
+//            SizedBox(height: 50.0),
+//            Column(
+//              children: <Widget>[
+//                Text('묵상의 기록',
+//                    style:TextStyle(
+//                      fontSize: 25,
+//                      color: Colors.black,
+//                    )),
+//                Padding(
+//                  padding:EdgeInsets.fromLTRB(0, 10, 0.0, 0.0),
+//                  child: Text('매일 동행 하는 기쁨',
+//                      style:TextStyle(
+//                        fontSize: 13,
+//                        color: Colors.grey,
+//                      )),
+//                )
+//              ],
+//            ),
+//            SizedBox(height: 50.0),
+//          ]),
+//
+//
+//
+//    );
 
   }
-}
+//
+//  Widget _buildSuggestions() {
+////    return ListView.builder(
+////        padding: const EdgeInsets.all(16.0),
+////        itemBuilder: /*1*/ (context, i) {
+////
+////          return _buildRow(_suggestions[i]);
+////        });
+//       return ListView(
+//           padding: EdgeInsets.all(16.0),
+//           children: _buildRow(_suggestions),
+//       );
+//  }
+//
+//  Widget _buildRow(String pair) {
+//    final alreadySaved = _saved.contains(pair);
+//    return ListTile(
+//      title: Text(
+//        pair,
+//      ),
+//      trailing: Icon(
+//        alreadySaved ? Icons.star : Icons.star_border,
+//        color: alreadySaved ? Colors.yellow : null,
+//      ),
+//      onTap: () {      // NEW lines from here...
+//        setState(() {
+//          if (alreadySaved) {
+//            _saved.remove(pair);
+//          } else {
+//            _saved.add(pair);
+//          }
+//        });
+//      },               // ... to here.
+//    );
+//  }
+//}

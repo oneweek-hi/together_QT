@@ -20,6 +20,7 @@ import 'package:togetherqt/write.dart';
 import 'alarm.dart';
 import 'detail.dart';
 import 'home.dart';
+import 'nav.dart';
 import 'list.dart';
 import 'login.dart';
 
@@ -31,13 +32,14 @@ class TogetherQtApp extends StatelessWidget {
     return MaterialApp(
       title: 'together QT',
       // TODO: Change home: to a Backdrop with a HomePage frontLayer (104)
-      home: HomePage(),
+      home: NavPage(),
       // TODO: Make currentCategory field take _currentCategory (104)
       // TODO: Pass _currentCategory for frontLayer (104)
       // TODO: Change backLayer field value to CategoryMenuPage (104)
       initialRoute: '/login',
       routes:{
-        '/home' : (BuildContext context) => HomePage(),
+        '/nav' : (BuildContext context) => NavPage(),
+        '/home' :(BuildContext context) => HomePage(),
         '/write' : (BuildContext context) => WritePage(),
         '/list' : (BuildContext context) => ListPage(),
         '/detail' : (BuildContext context) => DetailPage(),
