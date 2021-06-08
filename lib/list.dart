@@ -25,20 +25,22 @@
 //import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ListPage extends StatefulWidget{
-  ListPageSate createState()=> ListPageSate();
+import 'detail.dart';
+
+class ListPage extends StatefulWidget {
+  ListPageSate createState() => ListPageSate();
 }
 
-
-
-class ListPageSate extends State<ListPage>{
-  final _suggestions = <String>["test", "test2","test3", "test4", "test5"];
-  final _saved = <String>{};     // NEW
-  Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('everyPeopleQT').snapshots();
+class ListPageSate extends State<ListPage> {
+  final _suggestions = <String>["test", "test2", "test3", "test4", "test5"];
+  final _saved = <String>{}; // NEW
+  Stream<QuerySnapshot> _usersStream =FirebaseFirestore.instance.collection('everyPeopleQT').snapshots();
+//  CollectionReference _usersStream = FirebaseFirestore.instance.collection('products');
 
   @override
   Widget build(BuildContext context) {
@@ -53,17 +55,73 @@ class ListPageSate extends State<ListPage>{
           return Text("Loading");
         }
 
-        return Center (
-          child:ListView(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            children: snapshot.data.docs.map((DocumentSnapshot document) {
-              return new ListTile(
-                leading: Text("135 번째 묵상"),
-                title: new Text(document.data()['bibleContentAddr']),
-                trailing: Icon(Icons.star_border, color:Colors.amber),
-              );
-            }).toList(),
-          ),
+        return  ListView(
+
+            children: [
+              SizedBox(height: 50.0),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text('묵상의 기록',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black,
+                      )),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0.0, 0.0),
+                    child: Text('매일 동행 하는 기쁨',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                        )),
+                  )
+                ],
+              ),
+              SizedBox(height: 50.0),
+              Center(
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  children: snapshot.data.docs.map((DocumentSnapshot document) {
+                    return new ListTile(
+                      leading: Text("135 번째 묵상"),
+                      trailing: new Text(document.data()['bibleContentAddr']),
+//                      trailing: IconButton(
+//                        icon: Icon(
+//                          document.data()['starNum'] ? Icons.star : Icons.star_border,
+//                          color: Colors.amber
+//                        ),
+//                        onPressed: (){
+//                          setState(() {
+//                            print("heel");
+//                            if (document.data()['starNum']) {
+//                              _usersStream.
+//                                  .doc(productid).update({'productName':_productNameController.text,
+//                                'price':int.parse(_priceController.text),
+//                                'description':_descriptionController.text,
+//                                'productImage': downloadURL,
+//                                'ModifiedTime':FieldValue.serverTimestamp(),
+//                              })
+//
+//                            } else {
+//                              document.data().update('starNum', (value) => true);
+//                              print("flase");
+//                            }
+//                          });
+//
+//                        },
+//                      ),
+                      onTap: () {      // NEW lines from here...
+
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailPage(check: document.data()['check'])));
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+
         );
       },
     );
@@ -98,7 +156,7 @@ class ListPageSate extends State<ListPage>{
 //
 //    );
 
-  }
+}
 //
 //  Widget _buildSuggestions() {
 ////    return ListView.builder(

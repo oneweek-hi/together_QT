@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:togetherqt/userInfo.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -47,6 +49,16 @@ class _LoginPageState extends State<LoginPage> {
 //    UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
 //    return userCredential;
 //  }
+
+  Future<bool> checkIfDocExists(String docId) async {
+    try {
+      CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
+      var doc = await collectionRef.doc(docId).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
+  }
 
 
 
@@ -88,7 +100,20 @@ class _LoginPageState extends State<LoginPage> {
                   ),),
                 ),
                 onPressed: () async {
-                  signInWithGoogle().then((value) => Navigator.pushNamed(context, '/nav'));
+
+//                  int indexValue = await FirebaseFirestore.instance.collection('userInfo').snapshots.data.length;
+                  print("check");
+                  QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('userInfo').get();
+                  List<DocumentSnapshot> _myDocCount = _myDoc.docs;
+                  print(_myDocCount.length);
+
+
+                  signInWithGoogle().then((value) => checkIfDocExists(FirebaseAuth.instance.currentUser.uid) != null? Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfoPage(indexValue: _myDocCount.length+1)))
+                      : Navigator.pushNamed(context, '/userInfo'));
+
+
+
+
 //                  Navigator.pushNamed(context, '/home');
                 },
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amberAccent )),

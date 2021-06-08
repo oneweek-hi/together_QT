@@ -83,7 +83,7 @@ class NavPageSate extends State<NavPage>{
             ),
             onPressed: () async {
 //              await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
-              Navigator.pushNamed(context, '/add');
+              Navigator.pushNamed(context, '/mypage');
             },
           ),
         ],

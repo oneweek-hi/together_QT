@@ -15,11 +15,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:togetherqt/partner.dart';
+import 'package:togetherqt/userInfo.dart';
 import 'package:togetherqt/write.dart';
 
 import 'alarm.dart';
 import 'detail.dart';
 import 'home.dart';
+import 'mypage.dart';
 import 'nav.dart';
 import 'list.dart';
 import 'login.dart';
@@ -45,6 +47,8 @@ class TogetherQtApp extends StatelessWidget {
         '/detail' : (BuildContext context) => DetailPage(),
         '/alarm' : (BuildContext context) => AlarmPage(),
         '/partner' : (BuildContext context) => PartnerPage(),
+        '/mypage' : (BuildContext context) => MyPage(),
+        '/userInfo' : (BuildContext context) => UserInfoPage(),
 
 
 

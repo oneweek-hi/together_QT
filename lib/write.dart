@@ -328,7 +328,8 @@ class WritePageSate extends State<WritePage>{
                                   'userId': FirebaseAuth.instance.currentUser.uid,
                                   'CreatTime':FieldValue.serverTimestamp(),
                                   'starUIDs': [],
-                                  'bibleID': 2,
+                                  'bibleContent':content,
+                                  'bibleContentAddr': contentAddr,
                                   'userQTCounter':1,
                                 });
                           }

@@ -1,121 +1,202 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter/material.dart';
-//import 'package:intl/intl.dart';
-//
-//import 'model/products_repository.dart';
-//import 'model/product.dart';
-//import 'detail.dart';
-//
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
 
-class DetailPage extends StatefulWidget{
-  DetailPageSate createState()=> DetailPageSate();
+//import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'detail.dart';
+
+import 'app.dart';
+
+class DetailPage extends StatefulWidget {
+
+  final String check;
+
+  const DetailPage({Key key, this.check}) : super(key: key);
+
+  @override
+  _DetailPageState createState() => _DetailPageState(check);
 }
 
-
-
-class DetailPageSate extends State<DetailPage>{
-  int _currentIndex=0;
-
+class _DetailPageState extends State<DetailPage> {
+  final String check;
+  _DetailPageState(this.check);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Return an AsymmetricView (104)
-    // TODO: Pass Category variable to AsymmetricView (104)
-//    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('everyPeopleQT').where("check", isEqualTo: this.check).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
 
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amberAccent,
-//        leading: IconButton(
-//
-//          icon: Icon(
-//            Icons.person ,
-//            semanticLabel: 'profile',
-//          ),
-//          onPressed: () {
-//            Navigator.pushNamed(context, '/mypage');
-//          },
-//        ),
-          title: Text('함께묵상'),
-          actions: <Widget>[
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading");
+        }
 
-            IconButton(
-              icon: Icon(
-                Icons.person,
-                semanticLabel: 'profile',
+        return MaterialApp(
+          home: Scaffold(
+//            key: _scaffoldKey,
+            appBar: AppBar(
+              backgroundColor: Colors.amberAccent,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () async {
+              title: Text('함께묵상'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    semanticLabel: 'profile',
+                  ),
+                  onPressed: () async {
 //              await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
-                Navigator.pushNamed(context, '/add');
-              },
+                    Navigator.pushNamed(context, '/add');
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        body: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            children: <Widget>[
-            SizedBox(height: 90.0),
-        Column(
-          children: <Widget>[
-            Icon(Icons.account_balance, color:Colors.amber),
-            Text('묵상의 기록',
-                style:TextStyle(
-                  fontSize: 23,
-                  color: Colors.black,
-                )),
-            Text('매일 동행 하는 기',
-                style:TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                )),
-          ],
-        ),
-        SizedBox(height: 50.0),
+            body: ListView(
+              children: [
+                SizedBox(height: 40.0),
+                Container(
+                    alignment: Alignment(0.0, 0.0),
+                    child: Text('#150 번째 묵상 Mar 23. 2021',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ))),
+                SizedBox(height: 15.0),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('\“ \n\n',
+                          style: TextStyle(
+                            fontSize: 23,
+                            color: Colors.black,
+                          )),
+//                      Container(
+//                        width: 300,
+//                        child: Text(
+//                          snapshot.data['bibleContent'],
+//                          maxLines: 5,
+//                          textAlign: TextAlign.center,
+//                          style: TextStyle(fontSize: 18),
+//                        ),
+//                      ),
+                      Text(' \” \n\n',
+                          style: TextStyle(
+                            fontSize: 23,
+                            color: Colors.black,
+                          )),
+                    ]),
+//                Padding(
+//                  padding: EdgeInsets.fromLTRB(0, 30, 0.0, 0.0),
+//                  child: Text(
+//                    snapshot.data['bibleContentAddr'],
+//                    maxLines: 2,
+//                    textAlign: TextAlign.center,
+//                    style: TextStyle(fontSize: 15),
+//                  ),
+//                ),
+                SizedBox(height: 20.0),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
+                ),
 
-
-
-        ]),
-    bottomNavigationBar: BottomNavigationBar(
-    currentIndex: _currentIndex,
-//        type: BottomNavigationBarType.shifting,
-//        backgroundColor: Color(0xFFF8F7F5),
-    iconSize: 25,
-    items:[
-    BottomNavigationBarItem(icon: Icon(Icons.import_contacts, color:Color(0xFFE0BD32)), title: Text('home', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-    BottomNavigationBarItem(icon: Icon(Icons.assignment_sharp,color:Color(0xFFE0BD32)), title: Text('list', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-    BottomNavigationBarItem(icon: Icon(Icons.access_alarm,color:Color(0xFFE0BD32)), title: Text('alarm', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-    BottomNavigationBarItem(icon: Icon(Icons.favorite_rounded,color:Color(0xFFE0BD32)), title: Text('partner', style: TextStyle(color:Color(0xFFE0BD32))),backgroundColor: Color(0xFFF8F7F5),),
-    ],
-    onTap:(index){
-    setState(() {
-    _currentIndex = index;
-    });
+                Center(
+                  child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                    children: snapshot.data.docs.map((DocumentSnapshot document) {
+                      return new Padding(
+                        padding: EdgeInsets.fromLTRB(30, 10, 30, 20),
+                        child: Container(
+                          height: 250,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                //                    <--- top side
+                                color: Colors.amberAccent,
+                                width: 3.0,
+                              ),
+                            ),
+                            color: Color(0xFFFFFEF5),
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          child: new ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: 300.0,
+                            ),
+                            child: ListView(children: [
+                              Text(
+                                "주희",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Text(
+                                    document.data()['todayQT'],
+                                    style: TextStyle(fontSize: 15),
+                                  )),
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                  child: Text('감사 일기',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54))),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Text(
+                                  "1. " + document.data()['thanks1'],
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: Text(
+                                  "2. " + document.data()['thanks2'],
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: Text(
+                                  "3. " + document.data()['thanks3'],
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
     },
-    ),
-//description_rounded
-    //grade_outlined group
-//      resizeToAvoidBottomInset: false,
     );
-
   }
+
 }
