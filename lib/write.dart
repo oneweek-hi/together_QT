@@ -27,15 +27,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 
-class WritePage extends StatefulWidget{
-  WritePageSate createState()=> WritePageSate();
+class WritePage extends StatefulWidget {
+  WritePageSate createState() => WritePageSate();
 }
 
-
-
-class WritePageSate extends State<WritePage>{
+class WritePageSate extends State<WritePage> {
   CollectionReference dayBible = FirebaseFirestore.instance.collection('bible');
   String content;
   String contentAddr;
@@ -44,25 +44,33 @@ class WritePageSate extends State<WritePage>{
   final _thanks2Controller = TextEditingController();
   final _thanks3Controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  CollectionReference userInfo = FirebaseFirestore.instance.collection('userInfo');
 
+
+
+//  Future<void> updateParterUID() {
+//    print(FirebaseAuth.instance.currentUser.uid);
+//    return userInfo
+//    FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser.uid)
+//        .update({'bibleIndex':FirebaseAuth.instance.currentUser.uid,})
+//        .then((value) => print("User Updated"))
+//        .catchError((error) => print("Failed to update user: $error"));
+//  }
 
   @override
   Widget build(BuildContext context) {
-
+    AppState bible = Provider.of<AppState>(context);
     return StreamBuilder(
-      stream: dayBible.doc('2').snapshots(),
-      builder:(context, snapshot) {
-
+      stream: dayBible.doc(bible.bibleIndex).snapshots(),
+      builder: (context, snapshot) {
         if (snapshot.hasError) {
-
           return Text("has error");
         }
 
-        if(snapshot.connectionState == ConnectionState.active){
+        if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> data = snapshot.data.data();
           content = data['content'].toString();
           contentAddr = data['contentAddr'].toString();
-
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,10 +80,8 @@ class WritePageSate extends State<WritePage>{
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.amberAccent,
-
             title: Text('함께묵상'),
             actions: <Widget>[
-
               IconButton(
                 icon: Icon(
                   Icons.person,
@@ -96,10 +102,9 @@ class WritePageSate extends State<WritePage>{
                 Container(
                     alignment: Alignment(0.0, 0.0),
                     child: Text('#150 번째 묵상 Mar 23. 2021',
-                        style:TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
-
                         ))),
 
                 SizedBox(height: 15.0),
@@ -107,7 +112,7 @@ class WritePageSate extends State<WritePage>{
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text('\“ \n\n',
-                          style:TextStyle(
+                          style: TextStyle(
                             fontSize: 23,
                             color: Colors.black,
                           )),
@@ -117,26 +122,22 @@ class WritePageSate extends State<WritePage>{
                           content,
                           maxLines: 5,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18),
+                          style: TextStyle(fontSize: 18),
                         ),
                       ),
-
                       Text(' \” \n\n',
-                          style:TextStyle(
+                          style: TextStyle(
                             fontSize: 23,
                             color: Colors.black,
                           )),
-                    ]
-                ),
+                    ]),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 30, 0.0, 0.0),
                   child: Text(
                     contentAddr,
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 15),
+                    style: TextStyle(fontSize: 15),
                   ),
                 ),
 
@@ -144,12 +145,12 @@ class WritePageSate extends State<WritePage>{
 
                 Container(
                   alignment: Alignment(0.0, 0.0),
-                  child:Text('오늘의 말씀 묵상',
-                      style:TextStyle(
+                  child: Text('오늘의 말씀 묵상',
+                      style: TextStyle(
                         fontSize: 23,
                         color: Colors.black,
-
-                      )),),
+                      )),
+                ),
 
                 SizedBox(height: 10.0),
 
@@ -166,7 +167,8 @@ class WritePageSate extends State<WritePage>{
                             height: 200,
                             decoration: BoxDecoration(
                               border: Border(
-                                bottom: BorderSide( //                    <--- top side
+                                bottom: BorderSide(
+                                  //                    <--- top side
                                   color: Colors.amberAccent,
                                   width: 3.0,
                                 ),
@@ -228,12 +230,12 @@ class WritePageSate extends State<WritePage>{
                 SizedBox(height: 20.0),
                 Container(
                   alignment: Alignment(0.0, 0.0),
-                  child:Text('오늘의 감사일기',
-                      style:TextStyle(
+                  child: Text('오늘의 감사일기',
+                      style: TextStyle(
                         fontSize: 23,
                         color: Colors.black,
-
-                      )),),
+                      )),
+                ),
 
                 SizedBox(height: 10.0),
 
@@ -246,14 +248,12 @@ class WritePageSate extends State<WritePage>{
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       hintText: '1.',
-                      hintStyle: TextStyle(
-                          color: Colors.grey
-                      ),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(30.0, 10.0, 30.0,0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 0),
                   child: TextFormField(
                     controller: _thanks2Controller,
                     minLines: 1,
@@ -261,9 +261,7 @@ class WritePageSate extends State<WritePage>{
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       hintText: '2.',
-                      hintStyle: TextStyle(
-                          color: Colors.grey
-                      ),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
@@ -276,78 +274,73 @@ class WritePageSate extends State<WritePage>{
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       hintText: '3.',
-                      hintStyle: TextStyle(
-                          color: Colors.grey
-                      ),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
-
 
                 SizedBox(height: 50.0),
 
                 Container(
                     alignment: Alignment(0.0, 0.0),
                     child: Text('* 한번 등록된 묵상은 수정할 수가 없습니다 *',
-                        style:TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
-
                         ))),
                 SizedBox(height: 10.0),
 
                 Center(
                     child: Container(
-                      width: 200,
-                      child: ElevatedButton(
-
-                        style: ElevatedButton.styleFrom(
-
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(50.0),
-                          ),
-                          primary: Color(0xFFFFF3A5),
-                          onPrimary: Colors.grey,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
-                          child: Text('저    장', style: TextStyle(
-                            fontSize: 15,
-                          ),
-                          ),
-
-                        ),
-                        onPressed: () {
-
-                          if (_formKey.currentState.validate()){
-                                FirebaseFirestore.instance.collection("everyPeopleQT").add({
-                                  'todayQT':_todayQTController.text,
-                                  'thanks1':_thanks1Controller.text,
-                                  'thanks2':_thanks2Controller.text,
-                                  'thanks3':_thanks3Controller.text,
-                                  'userId': FirebaseAuth.instance.currentUser.uid,
-                                  'CreatTime':FieldValue.serverTimestamp(),
-                                  'starUIDs': [],
-                                  'bibleContent':content,
-                                  'bibleContentAddr': contentAddr,
-                                  'userQTCounter':1,
-                                });
-                          }
-                          Navigator.pushNamed(context, '/nav');}, //
+                  width: 200,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(50.0),
                       ),
-                    )
-                ),
+                      primary: Color(0xFFFFF3A5),
+                      onPrimary: Colors.grey,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
+                      child: Text(
+                        '저    장',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        FirebaseFirestore.instance
+                            .collection("bible")
+                            .doc(bible.bibleIndex)
+                            .collection(bible.coupleIndex)
+                            .doc(bible.name)
+                            .set({
+                          'todayQT': _todayQTController.text,
+                          'thanks1': _thanks1Controller.text,
+                          'thanks2': _thanks2Controller.text,
+                          'thanks3': _thanks3Controller.text,
+                          'userId': FirebaseAuth.instance.currentUser.uid,
+                          'CreatTime': FieldValue.serverTimestamp(),
+                        });
+
+                        FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser.uid)
+                            .update({'bibleIndex': bible.bibleIndexInt+1})
+                            .then((value) => print("User Updated"))
+                            .catchError((error) => print("Failed to update user: $error"));
+                      }
+                      Navigator.pushNamed(context, '/nav');
+                    }, //
+                  ),
+                )),
 
                 SizedBox(height: 40.0),
-
               ]),
 //      resizeToAvoidBottomInset: false,
         );
       },
     );
-
-
   }
-
-
 }

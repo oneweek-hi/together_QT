@@ -7,30 +7,34 @@ import 'package:flutter/material.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 
 import 'detail.dart';
 
 import 'app.dart';
 
+
 class DetailPage extends StatefulWidget {
 
-  final String check;
+  final String documetID;
 
-  const DetailPage({Key key, this.check}) : super(key: key);
+  const DetailPage({Key key, this.documetID}) : super(key: key);
 
   @override
-  _DetailPageState createState() => _DetailPageState(check);
+  _DetailPageState createState() => _DetailPageState(documetID);
 }
 
 class _DetailPageState extends State<DetailPage> {
-  final String check;
-  _DetailPageState(this.check);
+  final String documetID;
+  _DetailPageState(this.documetID);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('everyPeopleQT').where("check", isEqualTo: this.check).snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    AppState bible = Provider.of<AppState>(context);
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('bible').doc(documetID).collection(bible.coupleIndex).snapshots(),
+      builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
         }
@@ -85,30 +89,30 @@ class _DetailPageState extends State<DetailPage> {
                             fontSize: 23,
                             color: Colors.black,
                           )),
-//                      Container(
-//                        width: 300,
-//                        child: Text(
-//                          snapshot.data['bibleContent'],
-//                          maxLines: 5,
-//                          textAlign: TextAlign.center,
-//                          style: TextStyle(fontSize: 18),
-//                        ),
-//                      ),
+                      Container(
+                        width: 300,
+                        child: Text(
+                          bible.content,
+                          maxLines: 5,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
                       Text(' \” \n\n',
                           style: TextStyle(
                             fontSize: 23,
                             color: Colors.black,
                           )),
                     ]),
-//                Padding(
-//                  padding: EdgeInsets.fromLTRB(0, 30, 0.0, 0.0),
-//                  child: Text(
-//                    snapshot.data['bibleContentAddr'],
-//                    maxLines: 2,
-//                    textAlign: TextAlign.center,
-//                    style: TextStyle(fontSize: 15),
-//                  ),
-//                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 30, 0.0, 0.0),
+                  child: Text(
+                    bible.contentAddr,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ),
                 SizedBox(height: 20.0),
                 const Divider(
                   height: 1,
@@ -122,7 +126,7 @@ class _DetailPageState extends State<DetailPage> {
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     padding: EdgeInsets.symmetric(horizontal: 24.0),
-                    children: snapshot.data.docs.map((DocumentSnapshot document) {
+                    children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
                       return new Padding(
                         padding: EdgeInsets.fromLTRB(30, 10, 30, 20),
                         child: Container(

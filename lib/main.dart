@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'app.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,5 +24,62 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(TogetherQtApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AppState(),
+      builder: (context, _) => TogetherQtApp(),
+    ),
+  );
+}
+
+
+
+class AppState extends ChangeNotifier {
+  AppState() {
+    init();
+  }
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  String bibleIndex;
+  int bibleIndexInt;
+  String alarm;
+  String coupleIndex;
+  String name;
+  String stateMsg;
+  Future<void> init() async {
+    await Firebase.initializeApp();
+
+    await FirebaseFirestore.instance
+        .collection('userInfo')
+        .doc(auth.currentUser.uid)
+        .snapshots()
+        .listen((snapshot) {
+      bibleIndexInt= snapshot.data()['bibleIndex'];
+      bibleIndex = snapshot.data()['bibleIndex'].toString();
+      coupleIndex = snapshot.data()['coupleIndex'].toString();
+      name = snapshot.data()['name'].toString();
+      alarm = snapshot.data()['alarm'];
+      stateMsg = snapshot.data()['stateMsg'];
+      notifyListeners();
+    });
+  }
+
+  String content = "";
+  String contentAddr = "";
+
+
+  Future<void> getBible(String docId) async{
+    content = "";
+    contentAddr = "";
+    await FirebaseFirestore.instance
+        .collection('bible').doc(docId)
+        .snapshots()
+        .listen((event) {
+          content = event.data()['content'];
+          contentAddr = event.data()['contentAddr'];
+          notifyListeners();
+    });
+
+  }
+
 }

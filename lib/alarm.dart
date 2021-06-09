@@ -24,7 +24,11 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 
 class AlarmPage extends StatefulWidget{
@@ -34,7 +38,16 @@ class AlarmPage extends StatefulWidget{
 
 
 class AlarmPageSate extends State<AlarmPage>{
-  var _setectedTime;
+  String _sletectedTime;
+  CollectionReference userInfo = FirebaseFirestore.instance.collection('userInfo');
+
+  Future<void> updateAlarmTime() {
+    return userInfo
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update({'alarm':_sletectedTime,})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
 
 
   @override
@@ -43,6 +56,13 @@ class AlarmPageSate extends State<AlarmPage>{
     // TODO: Pass Category variable to AsymmetricView (104)
 //    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
+    AppState bible = Provider.of<AppState>(context);
+    if(_sletectedTime == null){
+      _sletectedTime = bible.alarm;
+      print("hellow heelow ");
+      print(_sletectedTime);
+
+    }
 
 
     return Center(
@@ -73,7 +93,7 @@ class AlarmPageSate extends State<AlarmPage>{
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Text('함께 묵상하는 파트너에게 동시에 알람이 갑니다.',
+                  child: Text('꾸준히 묵상 할 수 있도록 매일 같은 시간에 알람이 갑니다.',
                       style:TextStyle(
                         fontSize: 13,
                         color: Colors.grey,
@@ -82,7 +102,7 @@ class AlarmPageSate extends State<AlarmPage>{
               ],
             ),
             SizedBox(height: 50.0),
-            Center(child: Text('$_setectedTime', style: TextStyle(fontSize: 30),)),
+            Center(child: Text('$_sletectedTime', style: TextStyle(fontSize: 30),)),
             SizedBox(height: 40.0),
 
             Center(
@@ -131,7 +151,8 @@ class AlarmPageSate extends State<AlarmPage>{
                        },
                      );
 
-                     selected.then((time){setState((){ _setectedTime = '${time.format(context)}';});
+                     selected.then((time){setState((){ _sletectedTime = '${time.format(context)}';});
+                     updateAlarmTime();
                      });
                     }, //
 //                      '${time.hour} :${time.minute}'

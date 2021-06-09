@@ -29,6 +29,8 @@ import 'package:flutter/material.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 
 import 'detail.dart';
 
@@ -37,15 +39,15 @@ class ListPage extends StatefulWidget {
 }
 
 class ListPageSate extends State<ListPage> {
-  final _suggestions = <String>["test", "test2", "test3", "test4", "test5"];
-  final _saved = <String>{}; // NEW
-  Stream<QuerySnapshot> _usersStream =FirebaseFirestore.instance.collection('everyPeopleQT').snapshots();
-//  CollectionReference _usersStream = FirebaseFirestore.instance.collection('products');
+
+//  Stream<QuerySnapshot> everyQT =FirebaseFirestore.instance.collection('bible').snapshots();
+
 
   @override
   Widget build(BuildContext context) {
+    AppState bible = Provider.of<AppState>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: _usersStream,
+      stream:FirebaseFirestore.instance.collection('bible').where("id", isLessThan:bible.bibleIndexInt).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
@@ -86,7 +88,7 @@ class ListPageSate extends State<ListPage> {
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
                     return new ListTile(
                       leading: Text("135 번째 묵상"),
-                      trailing: new Text(document.data()['bibleContentAddr']),
+                      trailing: new Text(document.data()['contentAddr']),
 //                      trailing: IconButton(
 //                        icon: Icon(
 //                          document.data()['starNum'] ? Icons.star : Icons.star_border,
@@ -112,9 +114,8 @@ class ListPageSate extends State<ListPage> {
 //
 //                        },
 //                      ),
-                      onTap: () {      // NEW lines from here...
-
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailPage(check: document.data()['check'])));
+                      onTap: () {
+                        bible.getBible(document.id).then((value) => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailPage(documetID: document.id))));
                       },
                     );
                   }).toList(),

@@ -27,6 +27,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -64,8 +65,9 @@ class UserInfoPageSate extends State<UserInfoPage> {
       'userId': FirebaseAuth.instance.currentUser.uid,
       'p_userID':_pUserController.text,
       'name':_nameController.text,
-      'bibleIndex':0,
-      'alarm': FieldValue.serverTimestamp(),
+      'bibleIndex':1,
+      'stateMsg':"",
+      'alarm': DateFormat('h:mm a').format(DateTime.now()).toString(),
       'coupleIndex': (indexValue ~/ 2)+1 ,
     })
         .then((value) => print("User Added"))
@@ -167,16 +169,16 @@ class UserInfoPageSate extends State<UserInfoPage> {
                   ),
                   onPressed: () {
 //                          if (_formKey.currentState.){
-                  print('1');
+//                  print('1');
                             addUser();
-                  print('2');
+//                  print('2');
                             // ignore: prefer_is_not_empty
                             if(!(_pUserController.text.isEmpty)){
-                              print('3');
+//                              print('3');
                               updateParterUID();
-                              print('4');
+//                              print('4');
                             }
-                  print('5');
+//                  print('5');
                     Navigator.pushNamed(context, '/nav');
                   }, //
                 ),

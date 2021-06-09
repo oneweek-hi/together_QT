@@ -20,6 +20,7 @@ import 'package:togetherqt/write.dart';
 
 import 'alarm.dart';
 import 'detail.dart';
+import 'edit.dart';
 import 'home.dart';
 import 'mypage.dart';
 import 'nav.dart';
@@ -49,6 +50,7 @@ class TogetherQtApp extends StatelessWidget {
         '/partner' : (BuildContext context) => PartnerPage(),
         '/mypage' : (BuildContext context) => MyPage(),
         '/userInfo' : (BuildContext context) => UserInfoPage(),
+        '/edit' : (BuildContext context) => EditPage(),
 
 
 

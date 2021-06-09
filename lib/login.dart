@@ -27,10 +27,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    Future<bool> checkValue;
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -44,23 +45,6 @@ class _LoginPageState extends State<LoginPage> {
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
-//
-//  Future<UserCredential> signInWithAnonymous() async {
-//    UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
-//    return userCredential;
-//  }
-
-  Future<bool> checkIfDocExists(String docId) async {
-    try {
-      CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
-      var doc = await collectionRef.doc(docId).get();
-      return doc.exists;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -100,21 +84,19 @@ class _LoginPageState extends State<LoginPage> {
                   ),),
                 ),
                 onPressed: () async {
-
-//                  int indexValue = await FirebaseFirestore.instance.collection('userInfo').snapshots.data.length;
                   print("check");
                   QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('userInfo').get();
                   List<DocumentSnapshot> _myDocCount = _myDoc.docs;
                   print(_myDocCount.length);
 
+                  CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
+                  var doc = await collectionRef.doc(FirebaseAuth.instance.currentUser.uid).get();
+                  print(doc.exists);
 
-                  signInWithGoogle().then((value) => checkIfDocExists(FirebaseAuth.instance.currentUser.uid) != null? Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfoPage(indexValue: _myDocCount.length+1)))
-                      : Navigator.pushNamed(context, '/userInfo'));
+                  // ignore: unrelated_type_equality_checks
+                  signInWithGoogle().then((value) =>  doc.exists ? Navigator.pushNamed(context, '/nav')
+                      : Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfoPage(indexValue: _myDocCount.length+1))));
 
-
-
-
-//                  Navigator.pushNamed(context, '/home');
                 },
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amberAccent )),
 

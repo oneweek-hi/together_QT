@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 
 class MyPage extends StatefulWidget {
   MyPageSate createState() => MyPageSate();
@@ -31,8 +34,97 @@ class MyPageSate extends State<MyPage> {
   String contentAddr;
   File _image;
 
+
+  void FlutterDialog() {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            //Dialog Main Title
+            title:  DecoratedBox(
+
+              decoration: const BoxDecoration(color: Colors.amberAccent),
+              child: Align(
+                alignment: Alignment.center,
+                child:Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10.0),
+                    child: Text(
+                      "나의 코드 확인",
+                      style: TextStyle(
+                          color: Colors.white),
+                    )
+                ),
+              ),
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            //
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 10, 10.0, 10.0),
+                      child: Icon(Icons.star, size:20, color:Colors.amberAccent),
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 10, 10.0, 10.0),
+
+                      child: Container(
+                        width: 200,
+                        child: Text(
+                          FirebaseAuth.instance.currentUser.uid,
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 13),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
+
+                  child: Container(
+                    width: 200,
+                    child: Text(
+                      "* 파트너에게 해당 코드를 알려주시면, 함께 묵상 할 수 있습니다!",
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13),
+                    ),
+                  ),
+                ),
+
+
+              ],
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.amberAccent,
+//                  onPrimary: Colors.grey,
+                ),
+                child: new Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    AppState bible = Provider.of<AppState>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amberAccent,
@@ -104,14 +196,14 @@ class MyPageSate extends State<MyPage> {
             Padding(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child:Container(
-                height: 130,
+                height: 180,
                 decoration: BoxDecoration(
                   color: Color(0xFFFFFEF5),
                 ),
                 padding: EdgeInsets.all(10.0),
                 child: new ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 150.0,
+                    maxHeight: 150
                   ),
                   child: ListView(
                     scrollDirection: Axis.vertical,
@@ -124,13 +216,20 @@ class MyPageSate extends State<MyPage> {
                             trailing:Wrap(
                               spacing: 12, // space between two icons
                               children: <Widget>[
-                                Text('좋아요'), // icon-1
+                                Text('나의 코드 확인 하기'), // icon-1
                                 Icon(Icons.star,color:Colors.amber), // icon-2
                               ],
                             ),
+                              onTap: () => FlutterDialog(),
+
+
                           ),
                           ListTile(
                             trailing: Text('개인 정보 수정'),
+                            onTap: () => Navigator.pushNamed(context, '/edit'),
+                          ),
+                          ListTile(
+                            trailing: Text('로그 아웃'),
                           ),
                         ]).toList(),
                   ),

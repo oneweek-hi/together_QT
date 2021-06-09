@@ -69,7 +69,7 @@ class PartenrPageSate extends State<PartnerPage>{
       child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            SizedBox(height: 50.0),
+            SizedBox(height: 70.0),
             Column(
               children: <Widget>[
                 Text('함께 하는 사람',
@@ -87,7 +87,7 @@ class PartenrPageSate extends State<PartnerPage>{
                 )
               ],
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 40.0),
 
             Center(
               child: ClipOval(
@@ -139,33 +139,33 @@ class PartenrPageSate extends State<PartnerPage>{
             SizedBox(height: 30.0),
 
 
-            Center(
-                child: Container(
-                  width: 200,
-                  child: ElevatedButton(
-
-                    style: ElevatedButton.styleFrom(
-
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(50.0),
-                      ),
-                      primary: Color(0xFFFFF3A5),
-                      onPrimary: Colors.grey,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
-                      child: Text('응원 하기 ♫', style: TextStyle(
-                        fontSize: 15,
-                      ),
-                      ),
-
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/write');
-                    }, //
-                  ),
-                )
-            )
+//            Center(
+//                child: Container(
+//                  width: 200,
+//                  child: ElevatedButton(
+//
+//                    style: ElevatedButton.styleFrom(
+//
+//                      shape: new RoundedRectangleBorder(
+//                        borderRadius: new BorderRadius.circular(50.0),
+//                      ),
+//                      primary: Color(0xFFFFF3A5),
+//                      onPrimary: Colors.grey,
+//                    ),
+//                    child: Padding(
+//                      padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
+//                      child: Text('응원 하기 ♫', style: TextStyle(
+//                        fontSize: 15,
+//                      ),
+//                      ),
+//
+//                    ),
+//                    onPressed: () {
+//                      Navigator.pushNamed(context, '/write');
+//                    }, //
+//                  ),
+//                )
+//            )
 
     ],
     ),
