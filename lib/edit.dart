@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'main.dart';
 
@@ -20,7 +23,13 @@ class EditPageState extends State<EditPage> {
   final _formKey = GlobalKey<FormState>();
 
   File _image;
+  String downloadURL = "";
+  String reference ="";
   final picker = ImagePicker();
+  String timeNow = DateFormat('yy.MM.dd kk:mm:ss').format(DateTime.now());
+
+  FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +87,7 @@ class EditPageState extends State<EditPage> {
                 Container (
                   child: Column(
                       children: <Widget>[
-
-                        _image == null ? Image.network( snapshot.data['productImage'],
+                        _image == null ? Image.network( snapshot.data['picture']=="" ?  "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FqLRVR%2Fbtq6YnPZ8kv%2F9HdkvByH65lw7rAktC5bjK%2Fimg.png"  :snapshot.data['picture'],
                           fit: BoxFit.fitWidth,
                           width: 600,
                           height: 240,
@@ -103,7 +111,7 @@ class EditPageState extends State<EditPage> {
                   },
                 ),
                 Container(
-                    padding: const EdgeInsets.fromLTRB(30, 10, 0, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                     child: Form(
                         key: _formKey,
                         child: Column(
@@ -112,44 +120,79 @@ class EditPageState extends State<EditPage> {
                             // TODO: Change innermost Column (103)
                             children: <Widget>[
 
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0.0, 0.0, 30.0, 0),
-                                child:TextFormField(
+
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(70.0, 10.0, 70.0, 0),
+                                child: TextFormField(
                                   controller: _nameController,
                                   decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    filled: true,
-//                                    labelText: 'productName',
+                                    hintText: '이',
+                                    hintStyle: TextStyle(color: Colors.grey),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return '111';
-                                    }
-                                    return null;
-                                  },
-
                                 ),
                               ),
 
-
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0.0, 0.0, 30.0, 5.0),
-
-                                child:TextFormField(
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(70.0, 10.0, 70.0, 0),
+                                child: TextFormField(
                                   controller: _stateMsgController,
                                   decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    filled: true,
-//                                    labelText: 'Price',
+                                    hintText: '상태 메세지',
+                                    hintStyle: TextStyle(color: Colors.grey),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return '2222';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ),
+
+
+
+                              SizedBox(height: 40.0),
+
+                              Center(
+                                  child: Container(
+                                    width: 200,
+                                    child: ElevatedButton(
+
+                                      style: ElevatedButton.styleFrom(
+
+                                        shape: new RoundedRectangleBorder(
+                                          borderRadius: new BorderRadius.circular(50.0),
+                                        ),
+                                        primary: Color(0xFFFFF3A5),
+                                        onPrimary: Colors.grey,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.fromLTRB(20, 15, 20.0, 15),
+                                        child: Text('수 정 하 기', style: TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                        ),
+
+                                      ),
+                                      onPressed: () {
+
+                                        if(_image == null){
+                                          print("here");
+                                          userInfo.doc(FirebaseAuth.instance.currentUser.uid).update({
+                                            'name':_nameController.text,
+                                            'stateMsg':_stateMsgController.text,
+                                          }).then((value) => Navigator.pushNamed(context, '/mypage'));
+
+                                        }
+                                        else{
+                                          print("here222");
+                                          uploadFile().then((value) => downloadURLExample().then((value) =>
+                                              userInfo.doc(FirebaseAuth.instance.currentUser.uid).update({
+                                                'name':_nameController.text,
+                                                'stateMsg':_stateMsgController.text,
+                                                'picture': downloadURL,
+                                              }).then((value) => Navigator.pushNamed(context, '/mypage'))));
+                                        }
+
+
+                                      }, //
+                                    ),
+                                  )
+                              )
 
 
                             ]
@@ -157,6 +200,8 @@ class EditPageState extends State<EditPage> {
                     )
 
                 ),
+
+
               ],
             ),
           ),
@@ -197,6 +242,23 @@ class EditPageState extends State<EditPage> {
         print('No image selected.');
       }
     });
+  }
+
+  Future<void> uploadFile() async {
+    reference = "userId/"+timeNow+".png";
+    await firebase_storage.FirebaseStorage.instance
+        .ref(reference)
+        .putFile(_image);
+
+  }
+
+  Future<void> downloadURLExample() async {
+    downloadURL = await firebase_storage.FirebaseStorage.instance
+        .ref(reference)
+        .getDownloadURL();
+
+    // Within your widgets:
+    // Image.network(downloadURL);
   }
 
 }

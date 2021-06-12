@@ -324,6 +324,7 @@ class WritePageSate extends State<WritePage> {
                           'thanks3': _thanks3Controller.text,
                           'userId': FirebaseAuth.instance.currentUser.uid,
                           'CreatTime': FieldValue.serverTimestamp(),
+                          'username' : bible.name,
                         });
 
                         FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser.uid)

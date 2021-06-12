@@ -87,7 +87,7 @@ class ListPageSate extends State<ListPage> {
                   padding: EdgeInsets.symmetric(horizontal: 24.0),
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
                     return new ListTile(
-                      leading: Text("135 번째 묵상"),
+                      leading: Text("#"+document.data()['id'].toString() +" 번째 묵상"),
                       trailing: new Text(document.data()['contentAddr']),
 //                      trailing: IconButton(
 //                        icon: Icon(

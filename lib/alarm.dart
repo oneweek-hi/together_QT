@@ -70,7 +70,7 @@ class AlarmPageSate extends State<AlarmPage>{
       child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            SizedBox(height: 50.0),
+            SizedBox(height: 80.0),
             Column(
               children: <Widget>[
                 Icon(Icons.alarm , size: 30, color:Color(0xFFE0BD32)),

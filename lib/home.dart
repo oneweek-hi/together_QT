@@ -16,31 +16,11 @@ class HomePageSate extends State<HomePage> {
   CollectionReference dayBible = FirebaseFirestore.instance.collection('bible');
   String content;
   String contentAddr;
-//  var userInfoDoc =  FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser.uid).get();
-//
-//  var doc =  FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser.uid).get();
-
-//  int bibleindex = userInfoDoc.data()['bibleIndex'];
-//  doc bibleIndex = userInfo.doc(FirebaseAuth.instance.currentUser.uid).get();
-
-//  String bibleIndex;
-//  void getBibleIndex() async {
-//    CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
-//    var doc = await collectionRef.doc(FirebaseAuth.instance.currentUser.uid).get();
-//    print("function checker");
-//    print(doc.data()['bibleIndex']);
-//    bibleIndex = doc.data()['bibleIndex'].toString();
-//    print(bibleIndex);
-//  }
-//  Future<int> bibleIndex;
-//  dayBible.doc().snapshots(),
   @override
   Widget build(BuildContext context) {
     AppState bible = Provider.of<AppState>(context);
-
     return StreamBuilder(
-
-      stream: dayBible.doc(bible.bibleIndex).snapshots(),
+      stream: FirebaseFirestore.instance.collection('bible').doc(bible.bibleIndex).snapshots(),
       builder:(context, snapshot) {
 
         if (snapshot.hasError) {
@@ -53,7 +33,7 @@ class HomePageSate extends State<HomePage> {
         }
 
         if(snapshot.connectionState == ConnectionState.active){
-          print(bible.bibleIndex);
+//          print(bible.bibleIndex);
           Map<String, dynamic> data = snapshot.data.data();
           content = data['content'].toString();
           contentAddr = data['contentAddr'].toString();
@@ -72,11 +52,11 @@ class HomePageSate extends State<HomePage> {
                           fontSize: 23,
                           color: Colors.black,
                         )),
-                    Text('D + 365',
-                        style:TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                        )),
+//                    Text('',
+//                        style:TextStyle(
+//                          fontSize: 13,
+//                          color: Colors.grey,
+//                        )),
                   ],
                 ),
                 SizedBox(height: 50.0),

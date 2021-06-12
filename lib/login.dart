@@ -18,6 +18,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 import 'package:togetherqt/userInfo.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,6 +28,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool userExistChecker;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -44,6 +47,16 @@ class _LoginPageState extends State<LoginPage> {
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  void docExistCheck() async{
+    CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
+    var doc = await collectionRef.doc(FirebaseAuth.instance.currentUser.uid).get();
+    if(doc.exists){
+      userExistChecker = true;
+    }else{
+      userExistChecker = false;
+    }
   }
 
   @override
@@ -85,17 +98,19 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 onPressed: () async {
                   print("check");
+
+
                   QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('userInfo').get();
                   List<DocumentSnapshot> _myDocCount = _myDoc.docs;
                   print(_myDocCount.length);
-
-                  CollectionReference collectionRef = FirebaseFirestore.instance.collection('userInfo');
-                  var doc = await collectionRef.doc(FirebaseAuth.instance.currentUser.uid).get();
-                  print(doc.exists);
+//                  print(docExistCheck());
 
                   // ignore: unrelated_type_equality_checks
-                  signInWithGoogle().then((value) =>  doc.exists ? Navigator.pushNamed(context, '/nav')
+                  signInWithGoogle().then((value) => docExistCheck()).then((value) => userExistChecker? Navigator.pushNamed(context, '/nav')
                       : Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserInfoPage(indexValue: _myDocCount.length+1))));
+
+//
+
 
                 },
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amberAccent )),

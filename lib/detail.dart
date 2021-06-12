@@ -75,7 +75,7 @@ class _DetailPageState extends State<DetailPage> {
                 SizedBox(height: 40.0),
                 Container(
                     alignment: Alignment(0.0, 0.0),
-                    child: Text('#150 번째 묵상 Mar 23. 2021',
+                    child: Text('#'+ documetID+"번째 묵상",
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
@@ -148,7 +148,7 @@ class _DetailPageState extends State<DetailPage> {
                             ),
                             child: ListView(children: [
                               Text(
-                                "주희",
+                                document.data()['username'],
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,

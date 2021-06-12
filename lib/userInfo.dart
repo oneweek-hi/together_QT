@@ -28,6 +28,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:togetherqt/main.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -68,7 +70,8 @@ class UserInfoPageSate extends State<UserInfoPage> {
       'bibleIndex':1,
       'stateMsg':"",
       'alarm': DateFormat('h:mm a').format(DateTime.now()).toString(),
-      'coupleIndex': (indexValue ~/ 2)+1 ,
+      'coupleIndex': (indexValue % 2)==0?(indexValue ~/ 2) :((indexValue ~/ 2)+1 ),
+      'picture':'',
     })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -87,7 +90,9 @@ class UserInfoPageSate extends State<UserInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppState bible = Provider.of<AppState>(context);
     return Scaffold(
+
       body: SafeArea(
         child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -169,17 +174,18 @@ class UserInfoPageSate extends State<UserInfoPage> {
                   ),
                   onPressed: () {
 //                          if (_formKey.currentState.){
-//                  print('1');
+                  print('1');
                             addUser();
-//                  print('2');
+                  print('2');
                             // ignore: prefer_is_not_empty
                             if(!(_pUserController.text.isEmpty)){
-//                              print('3');
+                              print('3');
                               updateParterUID();
-//                              print('4');
+                              print('4');
                             }
-//                  print('5');
-                    Navigator.pushNamed(context, '/nav');
+                  print('5');
+
+                    Navigator.pushNamed(context, '/nav').then((value) => bible.something(FirebaseAuth.instance.currentUser.uid));
                   }, //
                 ),
               )),

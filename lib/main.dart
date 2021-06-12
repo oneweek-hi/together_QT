@@ -36,22 +36,22 @@ Future<void> main() async {
 
 class AppState extends ChangeNotifier {
   AppState() {
-    init();
+   init();
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
-  String bibleIndex;
-  int bibleIndexInt;
-  String alarm;
-  String coupleIndex;
-  String name;
-  String stateMsg;
-  Future<void> init() async {
-    await Firebase.initializeApp();
+  String bibleIndex ="";
+  int bibleIndexInt =1;
+  String alarm ="";
+  String coupleIndex="";
+  String name="";
+  String stateMsg="";
+  String picture="";
+  String p_userID="";
 
+  Future<void> something(String uid) async{
     await FirebaseFirestore.instance
         .collection('userInfo')
-        .doc(auth.currentUser.uid)
+        .doc(uid)
         .snapshots()
         .listen((snapshot) {
       bibleIndexInt= snapshot.data()['bibleIndex'];
@@ -60,6 +60,30 @@ class AppState extends ChangeNotifier {
       name = snapshot.data()['name'].toString();
       alarm = snapshot.data()['alarm'];
       stateMsg = snapshot.data()['stateMsg'];
+      picture = snapshot.data()['picture'];
+      p_userID = snapshot.data()['p_userID'];
+      notifyListeners();
+    });
+  }
+
+
+
+  Future<void> init() async {
+    await Firebase.initializeApp();
+
+    await FirebaseFirestore.instance
+        .collection('userInfo')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .snapshots()
+        .listen((snapshot) {
+      bibleIndexInt= snapshot.data()['bibleIndex'];
+      bibleIndex = snapshot.data()['bibleIndex'].toString();
+      coupleIndex = snapshot.data()['coupleIndex'].toString();
+      name = snapshot.data()['name'].toString();
+      alarm = snapshot.data()['alarm'];
+      stateMsg = snapshot.data()['stateMsg'];
+      picture = snapshot.data()['picture'];
+      p_userID = snapshot.data()['p_userID'];
       notifyListeners();
     });
   }

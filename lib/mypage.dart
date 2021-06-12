@@ -121,13 +121,103 @@ class MyPageSate extends State<MyPage> {
         });
   }
 
+
+  void LogOutDialog() {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            //Dialog Main Title
+            title:  DecoratedBox(
+
+              decoration: const BoxDecoration(color: Colors.amberAccent),
+              child: Align(
+                alignment: Alignment.center,
+                child:Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10.0),
+                    child: Text(
+                      "로그 아웃",
+                      style: TextStyle(
+                          color: Colors.white),
+                    )
+                ),
+              ),
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            //
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
+
+                  child: Container(
+                    width: 200,
+                    child: Text(
+                      "정말 로그아웃 하시겠습니까?",
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13),
+                    ),
+                  ),
+                ),
+
+
+              ],
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.amberAccent,
+//                  onPrimary: Colors.grey,
+                ),
+                child: new Text("취소"),
+                onPressed: () {
+                  Navigator.pop(context);
+
+                },
+              ),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.amberAccent,
+//                  onPrimary: Colors.grey,
+                ),
+                child: new Text("확인"),
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
+
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     AppState bible = Provider.of<AppState>(context);
+    print(bible.picture);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amberAccent,
+        leading:IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () async {
+//              await FirebaseAuth.instance.signOut().then((value) => Navigator.pushNamed(context, '/login'));
+            Navigator.pushNamed(context, '/nav');
+          },
+        ),
+
+
         title: Text('My Page'),
       ),
       body: Center(
@@ -162,11 +252,13 @@ class MyPageSate extends State<MyPage> {
                             child: Container(
                               width: 150,
                               height: 150,
-                              child: _image == null
+                              child: bible.picture == ""
                                   ? Image.network(
-                                      "https://cdn.9oodnews.com/news/photo/202102/2965_3351_058.jpg",
+                                  "https://blog.kakaocdn.net/dn/c3vWTf/btqUuNfnDsf/VQMbJlQW4ywjeI8cUE91OK/img.jpg",
                                       fit: BoxFit.fitWidth)
-                                  : Image.file(_image, fit: BoxFit.fitWidth),
+                                  : Image.network(
+                                  bible.picture,
+                                  fit: BoxFit.fitWidth)
                             ),
                           ),
                         ),
@@ -176,14 +268,14 @@ class MyPageSate extends State<MyPage> {
                             children: [
                               Padding(
                                 padding: EdgeInsets.fromLTRB(30, 10, 0.0, 0.0),
-                                child: Text('한주희',
+                                child: Text( bible.name,
                                     style: TextStyle(
                                       fontSize: 20,
                                     )),
                               ),
                               Padding(
                                 padding: EdgeInsets.fromLTRB(30, 10, 0.0, 0.0),
-                                child: Text('365일째 동행 중!',
+                                child: Text(bible.stateMsg,
                                     style: TextStyle(
                                       fontSize: 15,
                                     )),
@@ -230,6 +322,8 @@ class MyPageSate extends State<MyPage> {
                           ),
                           ListTile(
                             trailing: Text('로그 아웃'),
+
+                            onTap: () => LogOutDialog(),
                           ),
                         ]).toList(),
                   ),
