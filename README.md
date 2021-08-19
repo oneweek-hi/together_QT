@@ -40,4 +40,4 @@
 
 수업시간에 발표한 시연 영상입니다. 
 
-[유큐브 링크 바로가기😊](https://www.youtube.com/watch?v=jtHrCCaDDHk)
+[유큐브 링크 바로가기😊](https://www.youtube.com/watch?v=UuJU0MxkYRI)
